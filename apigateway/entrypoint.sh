@@ -1,3 +1,3 @@
 #!/bin/sh
-echo "starting user microservice"
+echo "starting apigateway"
 npm run start:debug

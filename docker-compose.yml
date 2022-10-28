@@ -13,6 +13,9 @@ services:
     entrypoint: ./entrypoint.sh
     depends_on:
       - nats
+    volumes:
+      - ./apigateway:/usr/src/app
+      - /usr/src/app/node_modules
 
   user:
     build: ./user
@@ -23,6 +26,9 @@ services:
     environment:
       NATS_SERVER: 'nats://nats:4222'
     entrypoint: ./entrypoint.sh
+    volumes:
+      - ./user:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - db
       - nats
