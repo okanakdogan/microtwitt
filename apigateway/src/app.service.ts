@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, of } from 'rxjs';
+import { ClientNatsProxyWithErrHandler } from './clientproxy/client_proxy_filter';
 
 @Injectable()
 export class AppService {
@@ -11,7 +12,7 @@ export class AppService {
   }
 
   login(dto) {
-    const res = this.client.send('login',dto).pipe(catchError(err=>of({ error: err})));
+    const res = this.client.send('login',dto).pipe(catchError(err=>of(err)));
     return res;
   }
 }
