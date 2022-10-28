@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions, } from '@nestjs/microservices';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './filter/http_exception.filter';
 
 async function bootstrap() {
   //TODO add post host configs
@@ -13,6 +14,7 @@ async function bootstrap() {
       },
     },
   );
+  app.useGlobalFilters(new HttpExceptionFilter())
   await app.listen();
 }
 bootstrap();

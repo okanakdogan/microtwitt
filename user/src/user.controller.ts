@@ -1,9 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseFilters, BadRequestException } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon2 from 'argon2';
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
+import { HttpExceptionFilter } from './filter/http_exception.filter';
 
 @Controller()
 export class UserController {
@@ -27,6 +28,8 @@ export class UserController {
     //TODO handle errors and just send success message
     return savedUser
   }
+
+ 
   @MessagePattern('login')
   async login(@Payload() data) {
     let user: User;
@@ -40,10 +43,10 @@ export class UserController {
       })
     }
     if(!user){
-      throw new RpcException('User not found');
+      throw new BadRequestException('test');
     }
     if(!(await argon2.verify(user.password_hash,data.password))){
-      throw new RpcException('User not found');
+      throw new BadRequestException('User not found');
     }
     //TODO return token here
     return user;

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './user.controller';
+import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
@@ -25,7 +25,7 @@ import { User } from './entity/user.entity';
     }),
     TypeOrmModule.forFeature([User])
   ],
-  controllers: [AppController],
+  controllers: [UserController],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
