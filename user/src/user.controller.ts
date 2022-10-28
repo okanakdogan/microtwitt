@@ -43,7 +43,7 @@ export class UserController {
       })
     }
     if(!user){
-      throw new BadRequestException('test');
+      throw new BadRequestException('User not found');
     }
     if(!(await argon2.verify(user.password_hash,data.password))){
       throw new BadRequestException('User not found');
