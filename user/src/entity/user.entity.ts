@@ -6,19 +6,19 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({unique:true})
     username: string
 
     @Column()
     displayName: string;
 
-    @Column()
+    @Column({unique:true})
     email: string;
 
     @Column()
     password_hash: string;
 
-    @Column({ type: "timestamp" })
+    @Column({ type: "timestamp", nullable:true})
     lastLogin: Date;
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
