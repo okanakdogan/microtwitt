@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, of } from 'rxjs';
-import { ClientNatsProxyWithErrHandler } from './clientproxy/client_proxy_filter';
 
 @Injectable()
 export class AppService {
