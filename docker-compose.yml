@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  apigateway:
+    build: ./apigateway
+    container_name: mt_apigateway_container
+    restart: always
+    env_file:
+      - ./apigateway/.env
+    ports:
+      - "8000:8000"
+    entrypoint: ./entrypoint.sh
+
+  user:
+    build: ./user
+    container_name: mt_user_container
+    restart: always
+    env_file:
+      - ./user/.env
+    entrypoint: ./entrypoint.sh
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13-alpine
+    container_name: mt_postgres_container
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/data/postgres
+    ports:
+      - '5432:5432' # for RDMS management tools
+    volumes:
+      - db:/data/postgres
+
+volumes:
+  db:
+    driver: local
