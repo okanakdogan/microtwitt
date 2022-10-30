@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ConfigModule } from '@nestjs/config/dist';
-import { ClientProxyFactory, ClientsModule, Transport } from '@nestjs/microservices';
-import { AppController } from './app.controller';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AuthController } from './auth.controller';
 import { AppService } from './app.service';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -22,8 +24,14 @@ import { AppService } from './app.service';
         inject:[ConfigService]
       },
     ]),
+    JwtModule.registerAsync({
+      useFactory: (config: ConfigService)=>({
+        secret: config.get('JWT_SECRET','default_secret'),
+      }),
+      inject:[ConfigService]
+    })
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AuthController],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

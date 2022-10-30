@@ -1,16 +1,17 @@
-import { Controller, UseFilters, BadRequestException } from '@nestjs/common';
-import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
+import { Controller, BadRequestException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { MessagePattern, Payload,  } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon2 from 'argon2';
-import { Repository } from 'typeorm';
+import { Repository, QueryFailedError } from 'typeorm';
 import { User } from './entity/user.entity';
-import { HttpExceptionFilter } from './filter/http_exception.filter';
 
 @Controller()
 export class UserController {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private jwtService: JwtService
   ){}
 
   @MessagePattern('signup')
@@ -23,10 +24,15 @@ export class UserController {
       password_hash: pw_hash,
       email: data.email
     });
-    const savedUser = await this.usersRepository.save(user);
 
-    //TODO handle errors and just send success message
-    return savedUser
+    try {
+      const savedUser = await this.usersRepository.save(user);
+      return savedUser;
+    } catch (error) {
+      if(error instanceof QueryFailedError){
+        throw new BadRequestException('Signup failed. Please check inputs');
+      }
+    }
   }
 
  
@@ -48,7 +54,18 @@ export class UserController {
     if(!(await argon2.verify(user.password_hash,data.password))){
       throw new BadRequestException('User not found');
     }
-    //TODO return token here
+    const token = this.createTokenForUser(user);
+    return token;
+  }
+
+  @MessagePattern('get_user_by_token_payload')
+  async getUserByPayload(@Payload() payload) {
+    const user = this.usersRepository.findOneBy({id: payload.sub});
     return user;
+  }
+
+  createTokenForUser(user: User){
+    const payload = { sub: user.id };
+    return this.jwtService.sign(payload);
   }
 }

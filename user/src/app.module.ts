@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { User } from './entity/user.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -23,7 +24,13 @@ import { User } from './entity/user.entity';
       }),
       inject: [ConfigService]
     }),
-    TypeOrmModule.forFeature([User])
+    TypeOrmModule.forFeature([User]),
+    JwtModule.registerAsync({
+      useFactory: (config: ConfigService)=>({
+        secret: config.get('JWT_SECRET','default_secret'),
+      }),
+      inject:[ConfigService]
+    })
   ],
   controllers: [UserController],
 })
