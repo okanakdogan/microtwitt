@@ -1,10 +1,26 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config/dist';
+import { JwtModule } from '@nestjs/jwt';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AuthModule } from './auth/auth.module';
+import { JwtStrategy } from './strategy/jwt.strategy';
+import { TweetModule } from './tweet/tweet.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal:true
+    }),
+    JwtModule.registerAsync({
+      useFactory: (config: ConfigService)=>({
+        secret: config.get('JWT_SECRET','default_secret'),
+      }),
+      inject:[ConfigService]
+    }),
+    AuthModule,
+    TweetModule
+  ],
+  providers: [JwtStrategy],
 })
 export class AppModule {}
