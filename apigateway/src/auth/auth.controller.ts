@@ -1,15 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Post,Get } from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AppService } from './app.service';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
 
 @ApiTags('Auth')
 @Controller()
 export class AuthController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AuthService) {}
 
   @ApiOperation({description:'Sign up with mail'})
   @Post('signup')
@@ -28,11 +26,4 @@ export class AuthController {
     return this.appService.login(dto);
   }
 
-
-  @Get('test')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  test(){
-    return 'test'
-  }
 }

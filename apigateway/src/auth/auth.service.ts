@@ -4,7 +4,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { TokenDto } from './dto/token.dto';
 
 @Injectable()
-export class AppService {
+export class AuthService {
   constructor(@Inject('USER_SERVICE') private client: ClientProxy){}
   signup(dto) {
     const res = this.client.send('signup',dto);
@@ -17,4 +17,5 @@ export class AppService {
     const resp : TokenDto = { access_token: token }
     return resp;
   }
+
 }
