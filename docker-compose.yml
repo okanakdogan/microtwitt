@@ -3,7 +3,7 @@ services:
   apigateway:
     build: ./apigateway
     container_name: mt_apigateway_container
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./apigateway/.env
     ports:
@@ -20,7 +20,7 @@ services:
   user:
     build: ./user
     container_name: mt_user_container
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./user/.env
     environment:
@@ -28,6 +28,22 @@ services:
     entrypoint: ./entrypoint.sh
     volumes:
       - ./user:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - db
+      - nats
+
+  tweet:
+    build: ./tweet
+    container_name: mt_tweet_container
+    restart: unless-stopped
+    env_file:
+      - ./tweet/.env
+    environment:
+      NATS_SERVER: 'nats://nats:4222'
+    entrypoint: ./entrypoint.sh
+    volumes:
+      - ./tweet:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
       - db
