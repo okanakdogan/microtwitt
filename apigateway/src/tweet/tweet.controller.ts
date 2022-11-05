@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Inject, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Inject, Param, Post, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -33,5 +33,26 @@ export class TweetController {
     return this.client.send('delete_tweet',data);
   }
 
+  @Post('like/:tweet_id')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  likeTweet(@Param('tweet_id') id:string, @User() user){
+    const data = {
+      tweet:{ id: id},
+      user: user
+    };
+    return this.client.send('like_tweet',data);
+  }
+
+  @Post('unlike/:tweet_id')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  unlikeTweet(@Body('tweet_id') id:string, @User() user){
+    const data = {
+      tweet:{ id: id},
+      user: user
+    };
+    return this.client.send('unlike_tweet',data);
+  }
   
 }
