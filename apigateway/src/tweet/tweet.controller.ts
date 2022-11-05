@@ -47,7 +47,7 @@ export class TweetController {
   @Post('unlike/:tweet_id')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
-  unlikeTweet(@Body('tweet_id') id:string, @User() user){
+  unlikeTweet(@Param('tweet_id') id:string, @User() user){
     const data = {
       tweet:{ id: id},
       user: user

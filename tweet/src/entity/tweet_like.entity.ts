@@ -1,8 +1,9 @@
-import { CreateDateColumn, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { CreateDateColumn, JoinColumn, OneToOne, PrimaryColumn, Unique } from "typeorm";
 import { Entity } from "typeorm/decorator/entity/Entity";
 import { Tweet } from "./tweet.entity";
 
 @Entity()
+@Unique(['user_id', 'tweet_id'])
 export class TweetLike{
     
     @PrimaryColumn()
