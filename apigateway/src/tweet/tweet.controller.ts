@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Inject, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -11,6 +11,13 @@ import { PostTweetDto } from './dto/post_tweet.dto';
 export class TweetController {
   constructor(@Inject('TWEET_SERVICE') private client: ClientProxy ) {}
 
+  @Get('tweet/:user_id')
+  getTweets(@Param('user_id') user_id:number, @User() user){
+    const data = {
+      user: {id:user_id}
+    }
+    return this.client.send('user_tweets',data);
+  }
   @Post('tweet')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()

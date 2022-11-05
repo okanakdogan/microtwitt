@@ -14,6 +14,14 @@ export class TweetController {
 
   private readonly logger = new Logger(TweetController.name);
 
+
+  @MessagePattern('user_tweets')
+  async getTweet(@Payload() data) {
+    const tweets = this.entityManager.findBy(Tweet,{user_id:data.user.id});
+    return tweets;
+  }
+
+
   @MessagePattern('post_tweet')
   async postTweet(@Payload() data) {
     const tweet = this.entityManager.create(Tweet,{
