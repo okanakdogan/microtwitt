@@ -49,6 +49,21 @@ services:
       - db
       - nats
 
+  social:
+    build: ./social
+    container_name: mt_social_container
+    restart: unless-stopped
+    env_file:
+      - ./social/.env
+    environment:
+      NATS_SERVER: 'nats://nats:4222'
+    entrypoint: ./entrypoint.sh
+    volumes:
+      - ./social:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - nats
+
   db:
     image: postgres:13-alpine
     container_name: mt_postgres_container

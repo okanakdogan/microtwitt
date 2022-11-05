@@ -6,6 +6,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { TweetModule } from './tweet/tweet.module';
+import { SocialModule } from './social/social.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { TweetModule } from './tweet/tweet.module';
       inject:[ConfigService]
     }),
     AuthModule,
-    TweetModule
+    TweetModule,
+    SocialModule
   ],
   providers: [JwtStrategy],
 })

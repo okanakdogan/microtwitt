@@ -2,5 +2,5 @@
 
 #TODO Note: add here wait it sh for listening database
 
-echo "starting tweet microservice"
+echo "starting social microservice"
 npm run start:debug

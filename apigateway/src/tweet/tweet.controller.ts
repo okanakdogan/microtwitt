@@ -9,7 +9,7 @@ import { PostTweetDto } from './dto/post_tweet.dto';
 @ApiTags('Tweet')
 @Controller()
 export class TweetController {
-  constructor(@Inject('TWEET_SERVICE') private client: ClientProxy ) {}
+  constructor(@Inject('TWEET_SERVICE') private client: ClientProxy) {}
 
   @Get('tweet/:user_id')
   getTweets(@Param('user_id') user_id:number, @User() user){
