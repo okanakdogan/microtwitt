@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MessagePattern, Payload,  } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon2 from 'argon2';
-import { Repository, QueryFailedError } from 'typeorm';
+import { Repository, QueryFailedError, In } from 'typeorm';
 import { User } from './entity/user.entity';
 
 @Controller()
@@ -62,6 +62,12 @@ export class UserController {
   async getUserByPayload(@Payload() payload) {
     const user = this.usersRepository.findOneBy({id: payload.sub});
     return user;
+  }
+
+  @MessagePattern('get_users_by_ids')
+  async getUserByIds(@Payload() data) {
+    const users = this.usersRepository.findBy({id: In(data.ids)});
+    return users;
   }
 
   createTokenForUser(user: User){

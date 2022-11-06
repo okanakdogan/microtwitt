@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AuthModule } from '../auth/auth.module';
 import { SocialController } from './social.controller';
 
 @Module({
@@ -17,6 +18,7 @@ import { SocialController } from './social.controller';
           inject:[ConfigService]
         },
       ]),
+      AuthModule
 ],
   controllers: [SocialController]
 })

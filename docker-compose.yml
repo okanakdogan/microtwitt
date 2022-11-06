@@ -77,10 +77,25 @@ services:
     volumes:
       - db:/data/postgres
 
+  graphdb:
+    image: neo4j:4.4.12-community
+    container_name: mt_neo4j_container
+    restart: unless-stopped
+    ports:
+      - '7474:7474' # browser access
+      - '7687:7687' # browser access
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_default__database=microtwitt
+    volumes:
+      - gdb:/data
+
   nats:
     image: nats:alpine3.16
     container_name: mt_nats_container
 
 volumes:
   db:
+    driver: local
+  gdb:
     driver: local
