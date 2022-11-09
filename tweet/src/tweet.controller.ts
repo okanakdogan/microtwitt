@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Logger } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { EntityManager, QueryFailedError } from 'typeorm';
+import { EntityManager, In, QueryFailedError } from 'typeorm';
 import { Tweet } from './entity/tweet.entity';
 import { TweetLike } from './entity/tweet_like.entity';
 
@@ -9,8 +9,7 @@ import { TweetLike } from './entity/tweet_like.entity';
 export class TweetController {
   constructor(
     private entityManager: EntityManager
-  ) {
-  }
+  ) {}
 
   private readonly logger = new Logger(TweetController.name);
 
@@ -20,7 +19,25 @@ export class TweetController {
     const tweets = this.entityManager.findBy(Tweet,{user_id:data.user.id});
     return tweets;
   }
-
+  
+  @MessagePattern('tweets_by_user_ids')
+  async getTweetsByUserIds(@Payload() data) {
+    const ids = data.user_ids;
+    if(!ids || ids.length===0){
+      return [];
+    }
+    const take = data.take || 100;
+    const skip = data.skip || 0;
+    const tweets = this.entityManager.find(Tweet,{
+       where:{ user_id: In(ids)},
+       order:{
+        created_at:"DESC"
+       },
+       take:take,
+       skip:skip
+    });
+    return tweets;
+  }
 
   @MessagePattern('post_tweet')
   async postTweet(@Payload() data) {

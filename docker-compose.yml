@@ -64,6 +64,21 @@ services:
     depends_on:
       - nats
 
+  timeline:
+    build: ./timeline
+    container_name: mt_timeline_container
+    restart: unless-stopped
+    env_file:
+      - ./timeline/.env
+    environment:
+      NATS_SERVER: 'nats://nats:4222'
+    entrypoint: ./entrypoint.sh
+    volumes:
+      - ./timeline:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - nats
+
   db:
     image: postgres:13-alpine
     container_name: mt_postgres_container
@@ -90,6 +105,14 @@ services:
     volumes:
       - gdb:/data
 
+  redis:
+    image: redis:6.2-alpine
+    container_name: mt_redis_container
+    restart: unless-stopped
+    command: redis-server --save 20 1 --loglevel warning --requirepass testpass
+    volumes:
+      - redis:/data
+
   nats:
     image: nats:alpine3.16
     container_name: mt_nats_container
@@ -98,4 +121,6 @@ volumes:
   db:
     driver: local
   gdb:
+    driver: local
+  redis:
     driver: local
