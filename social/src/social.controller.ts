@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { Neo4jService } from '@nhogs/nestjs-neo4j/dist';
-
+import neo4j from 'neo4j-driver';
 @Controller()
 export class SocialController {
   constructor(private readonly neo4j : Neo4jService) {}
@@ -74,5 +74,25 @@ export class SocialController {
     );
     const ids = queryResult.records.map((elem)=>{ return elem.get('n').properties.id})
     return ids;
+  }
+
+  @MessagePattern('discover_user')
+  async discoverUser(@Payload() data){
+    const limit = data.limit || 10
+    const usersToDiscover = await this.neo4j.run({
+      cypher: 'MATCH (user:User {id:$user_id})-[r:FOLLOW*2..3]->(n:User) RETURN n LIMIT $limit',
+      parameters:{user_id: data.user.id, limit: neo4j.int(limit)}
+    });
+    const ids = usersToDiscover.records.map((elem)=>{ return elem.get('n').properties.id})
+    if(ids.length>0){
+      return ids;
+    }
+    //no relation to list with graph length, create random
+    const latestUsers = await this.neo4j.run({
+      cypher: 'MATCH (user:User {id:$user_id}), (n:User) WHERE NOT (user)-[:FOLLOW]->(n:User) AND NOT user.id=n.id RETURN n ORDER BY n.created_at LIMIT $limit',
+      parameters:{user_id: data.user.id, limit: neo4j.int(limit)}
+    });
+    const latestUserIds = latestUsers.records.map((elem)=>{ return elem.get('n').properties.id})
+    return latestUserIds;
   }
 }

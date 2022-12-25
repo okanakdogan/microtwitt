@@ -2,9 +2,10 @@ import { Controller, Get } from '@nestjs/common';
 import { Inject, UseGuards } from '@nestjs/common/decorators';
 import { ClientProxy } from '@nestjs/microservices';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '../decorators/user.decorator';
 
+@ApiTags('Timeline')
 @Controller('timeline')
 export class TimelineController {
 

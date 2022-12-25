@@ -66,7 +66,8 @@ export class UserController {
 
   @MessagePattern('get_users_by_ids')
   async getUserByIds(@Payload() data) {
-    const users = this.usersRepository.findBy({id: In(data.ids)});
+    const users = await this.usersRepository.findBy({id: In(data.ids)});
+    users.forEach((u)=>{delete u.password_hash})
     return users;
   }
 
