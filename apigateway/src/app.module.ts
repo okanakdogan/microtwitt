@@ -7,6 +7,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { TweetModule } from './tweet/tweet.module';
 import { SocialModule } from './social/social.module';
 import { TimelineModule } from './timeline/timeline.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { TimelineModule } from './timeline/timeline.module';
     AuthModule,
     TweetModule,
     SocialModule,
-    TimelineModule
+    TimelineModule,
+    SearchModule
   ],
   providers: [JwtStrategy],
 })
