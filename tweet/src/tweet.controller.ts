@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Logger } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { EntityManager, In, QueryFailedError } from 'typeorm';
+import { EntityManager, ILike, In, QueryFailedError } from 'typeorm';
 import { Tweet } from './entity/tweet.entity';
 import { TweetLike } from './entity/tweet_like.entity';
 
@@ -114,5 +114,25 @@ export class TweetController {
         await manager.decrement(Tweet,{ id: data.tweet.id },'like_count',1);
     });
     return {status:'OK'};
+  }
+
+  @MessagePattern('tweet_count_by_keyword')
+  async tweetCountByKeyword(@Payload() data){
+    return await this.entityManager.count(Tweet,{
+      where:{
+        text:ILike(`%${data.keyword}%`)
+      }
+    })
+  }
+
+  @MessagePattern('search_by_keyword')
+  async searchByKeyword(@Payload() data){
+    return await this.entityManager.find(Tweet,{
+      where:{
+        text:ILike(`%${data.keyword}%`)
+      },
+      skip:data.skip,
+      take:data.take
+    })
   }
 }

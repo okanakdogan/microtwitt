@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MessagePattern, Payload,  } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon2 from 'argon2';
-import { Repository, QueryFailedError, In } from 'typeorm';
+import { Repository, QueryFailedError, In, ILike, Like } from 'typeorm';
 import { User } from './entity/user.entity';
 
 @Controller()
@@ -71,6 +71,21 @@ export class UserController {
     return users;
   }
 
+  @MessagePattern('search_users_by_name')
+  async searchUsersByName(@Payload() data){
+    const users = await this.usersRepository.find({
+      where:[
+        {displayName: Like(`${data.keyword}%`)},
+        {username: Like(`${data.keyword}%`)}
+      ],
+      select:{
+        id:true,
+        displayName:true,
+        username:true
+      }
+    });
+    return users;
+  }
   createTokenForUser(user: User){
     const payload = { sub: user.id };
     return this.jwtService.sign(payload);
