@@ -50,8 +50,8 @@ CRUD and search operations of Tweets are handled in Tweet microservice. It uses 
 
 ## How to Run
 
-Use docker compose to up and run.
-> docker compose build
+Use docker compose to build and run.
+> docker compose build  
 > docker compose up
 
 You can use swagger page to access and send request to API.
