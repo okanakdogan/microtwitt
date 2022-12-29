@@ -37,7 +37,9 @@ export class TimelineController {
       const timeline = await firstValueFrom(
         await this.tweetClient.send('tweets_by_user_ids',{user_ids:followings})
       );
-      this.cacheManager.set(key,timeline);
+      if(cache){
+        this.cacheManager.set(key,timeline);
+      }
       return timeline;
   }
   getUserTimelineKey(user_id){
