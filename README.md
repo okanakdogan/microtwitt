@@ -48,9 +48,19 @@ Creates and serves timeline data for each user and caches to be able to respond 
 
 CRUD and search operations of Tweets are handled in Tweet microservice. It uses Postgres database which is also used by User microservice, to reduce data layer services. But if we would like to separate concerns of development and create a domain driven architecture, we can create another database for this service
 
+## How to Run
+
+Use docker compose to up and run.
+> docker compose build
+> docker compose up
+
+You can use swagger page to access and send request to API.
+enter address to yor browser
+>http://localhost:3000
+
 ## Conclusion
 
-I've omitted the unit tests, integration tests, data seed, monitoring tools, detailed logs
+I've omitted the unit tests, integration tests, data seed, monitoring tools, detailed logs, SSL
 (maybe I will add data seed and monitoring tool later)
 
 Creating and developing all micro services in one repo has overheads:
